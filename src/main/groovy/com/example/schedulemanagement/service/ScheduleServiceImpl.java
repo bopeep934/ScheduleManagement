@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ScheduleServiceImpl implements ScheduleService {
+public class ScheduleServiceImpl implements ScheduleService {//controller에서 requestDto 객체를 받고 데이터를 처리하는 클래스.
 
     private final ScheduleRepository scheduleRepository;
 
@@ -24,14 +24,25 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto dto) {
-        Schedule schedule = new Schedule(dto.getWriter(), dto.getPassword(), dto.getDate(), dto.getToDo());
+        Schedule schedule;
+        if(dto.getDate()==null&&dto.getUpDate()==null){//만약 생성일,수정일이 비었다면 현재 시간을 인자로 넘기기
+            LocalDateTime date=LocalDateTime.now();
+            LocalDateTime update=LocalDateTime.now();
+             schedule = new Schedule(dto.getWriter(), dto.getPassword(), date, update, dto.getToDo());
 
+        }else {
+             schedule = new Schedule(dto.getWriter(), dto.getPassword(), dto.getDate(), dto.getUpDate(), dto.getToDo());
+        }
         return scheduleRepository.saveSchedule(schedule);
     }
 
     @Override
     public List<ScheduleResponseDto> findAllSchedule() {
         return scheduleRepository.findAllSchedule();
+    }
+
+    public List<ScheduleResponseDto> findScheduleByWriter(String writer) {
+        return scheduleRepository.findScheduleByWriter(writer);
     }
 
     @Override
@@ -42,15 +53,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDto updateSchedule(Long id, LocalDate update, String toDo) {
+    public ScheduleResponseDto updateSchedule(Long id, String writer, String toDo) {
 
         // 필수값 검증
-        if (update == null || toDo != null) {
+        if (writer == null || toDo == null) {//전달받은 인자가 모두 비어있다면 에러 처리
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The title and content are required values.");
         }
 
         // memo 제목 수정
-        int updatedRow = scheduleRepository.updateTodo(id, toDo);
+        int updatedRow = scheduleRepository.updateSchedule(id, writer, toDo);
         // 수정된 row가 0개 라면
         if (updatedRow == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
@@ -77,6 +88,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The password is incorrect.");
 //
 //        }
+    }
+
+    @Override
+    public List<ScheduleResponseDto> findScheduleByUpdate(LocalDate upDate) {
+        return scheduleRepository.findScheduleByUpdate(upDate);
+    }
+
+    @Override
+    public List<ScheduleResponseDto> findScheduleByCondition(String writer, LocalDate upDate) {
+        return scheduleRepository.findScheduleByCondition(writer,upDate);
     }
 
 

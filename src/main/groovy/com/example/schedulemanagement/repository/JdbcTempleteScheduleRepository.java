@@ -19,6 +19,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +44,14 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("writer", schedule.getWriter());
         parameters.put("password", schedule.getPassword());
-        parameters.put("date", schedule.getDate());
+        parameters.put("registration_date", schedule.getDate());
+        parameters.put("modification_date", schedule.getUpDate());
         parameters.put("todo", schedule.getToDo());
 
         //저장 후 생성된 key값 number 타입으로 반환하는 메서드
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new ScheduleResponseDto(key.longValue(), schedule.getWriter(), schedule.getDate(), schedule.getToDo());
+        return new ScheduleResponseDto(key.longValue(), schedule.getWriter(), schedule.getDate(), schedule.getUpDate(), schedule.getToDo());
 
 
     }
@@ -60,12 +63,27 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
     }
 
     @Override
-    public Optional<Schedule> findScheduleById(Long id) {
-        List<Schedule> result = jdbcTemplate.query("select * from schedule where id=?", scheduleRowMapperV2(), id);
-
-        return result.stream().findAny();//findAny()가 null값도 에러없이 처리해준다고 함.
-
+    public List<ScheduleResponseDto> findScheduleByWriter(String writer) {
+        return jdbcTemplate.query("select * from schedule where writer=?", scheduleRowMapper(), writer);
     }
+
+    @Override
+    public List<ScheduleResponseDto> findScheduleByCondition(String writer, LocalDate upDate) {
+        return  jdbcTemplate.query("select * from schedule where writer = ? and DATE(modification_date) >= ? order by modification_date desc", scheduleRowMapper(), writer, upDate);
+    }
+
+    @Override
+    public List<ScheduleResponseDto> findScheduleByUpdate(LocalDate upDate) {
+        return jdbcTemplate.query("select * from schedule where DATE(modification_date) >= ? order by modification_date desc", scheduleRowMapper(), upDate);
+    }
+
+//    @Override
+//    public Optional<Schedule> findScheduleById(Long id) {//사용 안함
+//        List<Schedule> result = jdbcTemplate.query("select * from schedule where id=?", scheduleRowMapperV2(), id);
+//
+//        return result.stream().findAny();//findAny()가 null값도 에러없이 처리해준다고 함.
+//
+//    }
 
     @Override
     public Schedule findScheduleByIdOrElseThrow(Long id) {
@@ -75,21 +93,24 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
     }//에러메시지가 뜨질 않음.
 
     @Override
-    public int updateSchedule(Long id, String title, String contents) {
-        return 0;
+    public int updateSchedule(Long id, String writer, String todo) {
+        System.out.println(LocalDateTime.now());
+        return jdbcTemplate.update("update schedule set writer = ?, todo = ? , modification_date = ? where id = ?", writer, todo, LocalDateTime.now(), id);
     }
 
-    @Override
-    public int updateTodo(Long id, String toDo) {
-        return 0;
-    }
+//    @Override
+
+    /// /    public int updateTodo(Long id, String todo) { 시간 남으면 추가 하기;
+    /// /        return jdbcTemplate.update("update schedule set todo = ? where id = ?", todo, id);
+    /// /    }
 
     @Override
     public int deleteSchedule(Long id, String password) {
-    //    if(jdbcTemplate.query("select * from schedule where id = ? and password =?", id, password )!=0)
+        //    if(jdbcTemplate.query("select * from schedule where id = ? and password =?", id, password )!=0)
         return jdbcTemplate.update("delete from schedule where id = ? and password= ? ", id, password);
 
     }
+
 
 
     private RowMapper<ScheduleResponseDto> scheduleRowMapper() {
@@ -99,7 +120,8 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
                 return new ScheduleResponseDto(
                         rs.getLong("id"),
                         rs.getString("writer"),
-                        rs.getDate("date").toLocalDate(),
+                        rs.getTimestamp("registration_date").toLocalDateTime(),
+                        rs.getTimestamp("modification_date").toLocalDateTime(),
                         rs.getString("todo")
                 );
             }
@@ -114,7 +136,8 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
                 return new Schedule(
                         rs.getLong("id"),
                         rs.getString("writer"),
-                        rs.getDate("date").toLocalDate(),
+                        rs.getTimestamp("registration_date").toLocalDateTime(),
+                        rs.getTimestamp("modification_date").toLocalDateTime(),
                         rs.getString("todo")
                 );
             }

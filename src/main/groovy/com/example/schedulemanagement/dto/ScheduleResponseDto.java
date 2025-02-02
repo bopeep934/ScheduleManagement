@@ -13,14 +13,16 @@ public class ScheduleResponseDto {
 
     private Long id;
     private String writer;
-    private LocalDate date;
-    //  private String update;
+    private LocalDateTime date;
+    private LocalDateTime upDate;
     private String toDo;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.writer = schedule.getWriter();
         this.date = schedule.getDate();
+        this.upDate= schedule.getUpDate();
         this.toDo = schedule.getToDo();
     }
+
 }

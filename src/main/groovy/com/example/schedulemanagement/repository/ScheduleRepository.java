@@ -5,6 +5,8 @@ import com.example.schedulemanagement.dto.ScheduleResponseDto;
 import com.example.schedulemanagement.entity.Schedule;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,13 +16,20 @@ public interface ScheduleRepository {
 
     List<ScheduleResponseDto> findAllSchedule();//모든 일정 반환
 
-    Optional<Schedule> findScheduleById(Long id);//선택한 일정 반환
+    List<ScheduleResponseDto> findScheduleByWriter(String writer);
+
+ //   Optional<Schedule> findScheduleById(Long id);//선택한 일정 반환
 
     Schedule findScheduleByIdOrElseThrow(Long id);
 
     int updateSchedule(Long id, String title, String contents);
 
-    int updateTodo(Long id, String toDo);
+  //  int updateTodo(Long id, String toDo);
+
 
     int deleteSchedule(Long id,String password);
+
+    List<ScheduleResponseDto> findScheduleByCondition(String writer, LocalDate upDate);
+
+    List<ScheduleResponseDto> findScheduleByUpdate(LocalDate upDate);
 }

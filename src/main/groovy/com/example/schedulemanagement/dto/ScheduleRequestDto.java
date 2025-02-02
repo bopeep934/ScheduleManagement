@@ -10,8 +10,9 @@ public class ScheduleRequestDto {
 
     private String writer;
     private String password;
-    private LocalDate date;
-    // private String update;
+    private LocalDateTime date;
+    private LocalDateTime upDate;
+    private LocalDate findDate;
     private String toDo;
 
 
