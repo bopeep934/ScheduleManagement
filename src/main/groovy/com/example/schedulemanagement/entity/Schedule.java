@@ -36,12 +36,12 @@ public class Schedule {//일정 객체. 일정 하나의 정보를 담고 있다
         this.toDo = toDo;
     }
 
-    public void update(LocalDateTime upDate, String writer, String toDo) {//수정1: 전체적으로 수정날짜와 할일을 수정 한다. 갑자기 든 생각인데 자동생성 수정날짜를 굳이 메소드로 구현할 필요가 있을까?
-        //생각해보니 답은 yes인게(아마도), 고유 번호는 절대적이지만 이건 절대적이지 않으니까.
-        this.upDate = upDate;
-        this.writer= writer;
-        this.toDo = toDo;
-    }
+//    public void update(LocalDateTime upDate, String writer, String toDo) {//수정1: 전체적으로 수정날짜와 할일을 수정 한다. 갑자기 든 생각인데 자동생성 수정날짜를 굳이 메소드로 구현할 필요가 있을까?
+//        //생각해보니 답은 yes인게(아마도), 고유 번호는 절대적이지만 이건 절대적이지 않으니까.
+//        this.upDate = upDate;
+//        this.writer= writer;
+//        this.toDo = toDo;
+//    }
 //
 //    public void updateWriter(LocalDateTime upDate, String writer) {//수정2. 작성자만 수정
 //        this.upDate = upDate;
