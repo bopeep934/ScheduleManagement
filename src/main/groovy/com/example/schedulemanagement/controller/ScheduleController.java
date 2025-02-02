@@ -52,7 +52,7 @@ public class ScheduleController {//main에서 가장 처음 데이터를 처리�
         return scheduleService.findAllSchedule();
 
     }
-    @GetMapping("/writer")
+    @GetMapping("/list")
     public List<ScheduleResponseDto> findScheduleByWriter(@RequestBody ScheduleRequestDto dto) {//작성자를 주소에 입력받아 목록 조회
         List<ScheduleResponseDto> findScheduleByCondition = null;
 
