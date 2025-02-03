@@ -53,7 +53,7 @@ public class ScheduleController {//main에서 가장 처음 데이터를 처리�
 
     }
     @GetMapping("/list")
-    public List<ScheduleResponseDto> findScheduleByWriter(@RequestBody ScheduleRequestDto dto) {//작성자를 주소에 입력받아 목록 조회
+    public List<ScheduleResponseDto> findScheduleByWriter(@RequestBody ScheduleRequestDto dto) {//작성자id별+ 기간별 조회
         List<ScheduleResponseDto> findScheduleByCondition = null;
 
         if(dto.getWriter_id()!=null&&dto.getFindDate()!=null)
@@ -68,7 +68,7 @@ public class ScheduleController {//main에서 가장 처음 데이터를 처리�
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable("id") Long id) {//선택한 일정 조회
+    public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable("id") Long id) {//id별 선택한 일정 조회
         return new ResponseEntity<>(scheduleService.findScheduleById(id), HttpStatus.OK);
     }
 

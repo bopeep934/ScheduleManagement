@@ -13,6 +13,7 @@ public class Schedule {//일정 객체. 일정 하나의 정보를 담고 있다
 
     private Long id;// 일정 고유 아이디, 자동 생성
     private String writer_id;//작성자
+    private String writer_name;//작성자 이름 넣을 변수
     private String password;//비밀번호
  // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd")
     private final LocalDateTime date;//생성일, 변경 불가
@@ -20,17 +21,18 @@ public class Schedule {//일정 객체. 일정 하나의 정보를 담고 있다
     private String toDo;//할일
 
 
-    public Schedule(String writer_id, String password, LocalDateTime date,  LocalDateTime upDate, String toDo) {//최초 생성 시 생성자
+    public Schedule(String writer_id, String password, String writer_name, LocalDateTime date,  LocalDateTime upDate, String toDo) {//최초 생성 시 생성자
         this.writer_id = writer_id;
+        this.writer_name = writer_name;
         this.password = password;
         this.date = date;
         this.upDate= upDate;
         this.toDo = toDo;
     }
 
-    public Schedule(Long id, String writer_id, LocalDateTime date,  LocalDateTime upDate, String toDo) {//최초 생성 시 생성자
+    public Schedule(Long id, String writer_name, LocalDateTime date,  LocalDateTime upDate, String toDo) {//최초 생성 시 생성자
         this.id = id;
-        this.writer_id = writer_id;
+        this.writer_name = writer_name;
         this.date = date;
         this.upDate= upDate;
         this.toDo = toDo;

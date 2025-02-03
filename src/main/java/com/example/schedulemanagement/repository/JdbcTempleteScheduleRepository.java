@@ -43,6 +43,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("writer_id", schedule.getWriter_id());
+        parameters.put("writer_name", schedule.getWriter_name());
         parameters.put("password", schedule.getPassword());
         parameters.put("registration_date", schedule.getDate());
         parameters.put("modification_date", schedule.getUpDate());
@@ -51,7 +52,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
         //저장 후 생성된 key값 number 타입으로 반환하는 메서드
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new ScheduleResponseDto(key.longValue(), schedule.getWriter_id(), schedule.getDate(), schedule.getUpDate(), schedule.getToDo());
+        return new ScheduleResponseDto(key.longValue(),  schedule.getWriter_name(), schedule.getDate(), schedule.getUpDate(), schedule.getToDo());
 
 
     }
@@ -63,13 +64,13 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
     }
 
     @Override
-    public List<ScheduleResponseDto> findScheduleByWriter(String writer) {
-        return jdbcTemplate.query("select * from schedule where writer=?", scheduleRowMapper(), writer);
+    public List<ScheduleResponseDto> findScheduleByWriter(String writer_id) {
+        return jdbcTemplate.query("select * from schedule where writer_id=?", scheduleRowMapper(), writer_id);
     }
 
     @Override
-    public List<ScheduleResponseDto> findScheduleByCondition(String writer, LocalDate upDate) {
-        return  jdbcTemplate.query("select * from schedule where writer = ? and DATE(modification_date) >= ? order by modification_date desc", scheduleRowMapper(), writer, upDate);
+    public List<ScheduleResponseDto> findScheduleByCondition(String writer_id, LocalDate upDate) {
+        return  jdbcTemplate.query("select * from schedule where writer_id = ? and DATE(modification_date) >= ? order by modification_date desc", scheduleRowMapper(), writer_id, upDate);
     }
 
     @Override
@@ -93,9 +94,9 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
     }//에러메시지가 뜨질 않음.
 
     @Override
-    public int updateSchedule(Long id, String writer, String todo) {
+    public int updateSchedule(Long id, String writer_id, String todo) {
         System.out.println(LocalDateTime.now());
-        return jdbcTemplate.update("update schedule set writer = ?, todo = ? , modification_date = ? where id = ?", writer, todo, LocalDateTime.now(), id);
+        return jdbcTemplate.update("update schedule set writer_id = ?, todo = ? , modification_date = ? where id = ?", writer_id, todo, LocalDateTime.now(), id);
     }
 
 //    @Override
@@ -119,7 +120,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
             public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new ScheduleResponseDto(
                         rs.getLong("id"),
-                        rs.getString("writer_id"),
+                        rs.getString("writer_name"),
                         rs.getTimestamp("registration_date").toLocalDateTime(),
                         rs.getTimestamp("modification_date").toLocalDateTime(),
                         rs.getString("todo")
@@ -135,7 +136,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
             public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new Schedule(
                         rs.getLong("id"),
-                        rs.getString("writer_id"),
+                        rs.getString("writer_name"),
                         rs.getTimestamp("registration_date").toLocalDateTime(),
                         rs.getTimestamp("modification_date").toLocalDateTime(),
                         rs.getString("todo")

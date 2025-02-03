@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 public class ScheduleResponseDto {
 
     private Long id;
-    private String writer_id;
+    private String writer_name;
     private LocalDateTime date;
     private LocalDateTime upDate;
     private String toDo;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
-        this.writer_id = schedule.getWriter_id();
+        this.writer_name = schedule.getWriter_name();
         this.date = schedule.getDate();
         this.upDate= schedule.getUpDate();
         this.toDo = schedule.getToDo();

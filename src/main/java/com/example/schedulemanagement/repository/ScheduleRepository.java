@@ -16,13 +16,13 @@ public interface ScheduleRepository {
 
     List<ScheduleResponseDto> findAllSchedule();//모든 일정 반환
 
-    List<ScheduleResponseDto> findScheduleByWriter(String writer);
+    List<ScheduleResponseDto> findScheduleByWriter(String writer_id);
 
  //   Optional<Schedule> findScheduleById(Long id);//선택한 일정 반환
 
     Schedule findScheduleByIdOrElseThrow(Long id);
 
-    int updateSchedule(Long id, String title, String contents);
+    int updateSchedule(Long id, String writer_id, String contents);
 
   //  int updateTodo(Long id, String toDo);
 

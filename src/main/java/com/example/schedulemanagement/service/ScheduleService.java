@@ -13,11 +13,11 @@ public interface ScheduleService {//service 인터페이스
 
     public List<ScheduleResponseDto> findAllSchedule();
 
-    public List<ScheduleResponseDto> findScheduleByWriter(String writer);
+    public List<ScheduleResponseDto> findScheduleByWriter(String writer_id);
 
     public ScheduleResponseDto findScheduleById(Long id);
 
-    public ScheduleResponseDto updateSchedule(Long id, String writer, String toDo);
+    public ScheduleResponseDto updateSchedule(Long id, String writer_id, String toDo);
 
     public void deleteSchedule(Long id, Map<String, String> password);
 

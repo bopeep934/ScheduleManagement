@@ -56,7 +56,7 @@ public class JdbcTempleteWriterRepository implements WriterRepository{
 
     @Override
     public Writer findWriterById(String writer_id) {
-        List<Writer> result = jdbcTemplate.query("select * from memo where id = ?", writerRowMapperV2(), writer_id);
+        List<Writer> result = jdbcTemplate.query("select * from writer where writer_id = ?", writerRowMapperV2(), writer_id);
 
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + writer_id));
 

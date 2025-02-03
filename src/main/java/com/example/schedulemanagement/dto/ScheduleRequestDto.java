@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class ScheduleRequestDto {
 
     private String writer_id;
+    private String writer_name;
     private String password;
     private LocalDateTime date;
     private LocalDateTime upDate;
