@@ -1,5 +1,6 @@
 package com.example.schedulemanagement.repository;
 
+import com.example.schedulemanagement.entity.PageInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,9 +11,6 @@ import javax.sql.DataSource;
 
 import com.example.schedulemanagement.dto.ScheduleResponseDto;
 import com.example.schedulemanagement.entity.Schedule;
-import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class JdbcTempleteScheduleRepository implements ScheduleRepository {
@@ -55,6 +52,17 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
         return new ScheduleResponseDto(key.longValue(),  schedule.getWriter_name(), schedule.getDate(), schedule.getUpDate(), schedule.getToDo());
 
 
+    }
+    public PageInfo<ScheduleResponseDto> findPages(int page, int size){
+
+        int offset = (page - 1) * size;
+
+        List<ScheduleResponseDto> pages = jdbcTemplate.query("SELECT * FROM schedule ORDER BY id LIMIT ? OFFSET ?",scheduleRowMapper(), size, offset);
+
+        // 전체 데이터 개수 조회
+        int totalElements = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM schedule", Integer.class);
+
+        return new PageInfo<ScheduleResponseDto>(pages, page, size, totalElements);
     }
 
 

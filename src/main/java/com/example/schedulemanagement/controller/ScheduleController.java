@@ -1,7 +1,9 @@
 package com.example.schedulemanagement.controller;
 
+import com.example.schedulemanagement.dto.PageRequestDto;
 import com.example.schedulemanagement.dto.ScheduleRequestDto;
 import com.example.schedulemanagement.dto.ScheduleResponseDto;
+import com.example.schedulemanagement.entity.PageInfo;
 import com.example.schedulemanagement.service.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,16 +53,17 @@ public class ScheduleController {//main에서 가장 처음 데이터를 처리�
         return scheduleService.findAllSchedule();
 
     }
+
     @GetMapping("/list")
     public List<ScheduleResponseDto> findScheduleByWriter(@RequestBody ScheduleRequestDto dto) {//작성자id별+ 기간별 조회
         List<ScheduleResponseDto> findScheduleByCondition = null;
 
-        if(dto.getWriter_id()!=null&&dto.getFindDate()!=null)
-            findScheduleByCondition=scheduleService.findScheduleByCondition(dto.getWriter_id(),dto.getFindDate());
-        if(dto.getWriter_id()!=null&&dto.getFindDate()==null)
-            findScheduleByCondition=scheduleService.findScheduleByWriter(dto.getWriter_id());
-        if(dto.getFindDate()!=null&&dto.getWriter_id()==null)
-            findScheduleByCondition=scheduleService.findScheduleByUpdate(dto.getFindDate());
+        if (dto.getWriter_id() != null && dto.getFindDate() != null)
+            findScheduleByCondition = scheduleService.findScheduleByCondition(dto.getWriter_id(), dto.getFindDate());
+        if (dto.getWriter_id() != null && dto.getFindDate() == null)
+            findScheduleByCondition = scheduleService.findScheduleByWriter(dto.getWriter_id());
+        if (dto.getFindDate() != null && dto.getWriter_id() == null)
+            findScheduleByCondition = scheduleService.findScheduleByUpdate(dto.getFindDate());
 
         return findScheduleByCondition;
 
@@ -91,11 +93,18 @@ public class ScheduleController {//main에서 가장 처음 데이터를 처리�
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable("id") Long id, @RequestBody Map<String, String> passwordMap) {//선택한 일정 아이디 받아 삭제하기
         try {
-            scheduleService.deleteSchedule(id,passwordMap);
+            scheduleService.deleteSchedule(id, passwordMap);
         } catch (ResponseStatusException e) {
             log.error(e.getReason());
         }
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
+
+    @GetMapping("/pages")
+    public PageInfo<ScheduleResponseDto> findPages(@RequestBody PageRequestDto dto) {
+        //   System.out.println("size:" +dto.getSize()+" page:" +dto.getPage());
+        return scheduleService.findPages(dto);
+    }
+
 }

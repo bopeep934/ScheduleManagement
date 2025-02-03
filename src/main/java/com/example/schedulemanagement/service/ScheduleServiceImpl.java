@@ -1,7 +1,9 @@
 package com.example.schedulemanagement.service;
 
+import com.example.schedulemanagement.entity.PageInfo;
 import com.example.schedulemanagement.dto.ScheduleRequestDto;
 import com.example.schedulemanagement.dto.ScheduleResponseDto;
+import com.example.schedulemanagement.dto.PageRequestDto;
 import com.example.schedulemanagement.entity.Schedule;
 import com.example.schedulemanagement.repository.ScheduleRepository;
 import org.springframework.http.HttpStatus;
@@ -25,13 +27,13 @@ public class ScheduleServiceImpl implements ScheduleService {//controller에서 
     @Override
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto dto) {
         Schedule schedule;
-        if(dto.getDate()==null&&dto.getUpDate()==null){//만약 생성일,수정일이 비었다면 현재 시간을 인자로 넘기기
-            LocalDateTime date=LocalDateTime.now();
-            LocalDateTime update=LocalDateTime.now();
+        if (dto.getDate() == null && dto.getUpDate() == null) {//만약 생성일,수정일이 비었다면 현재 시간을 인자로 넘기기
+            LocalDateTime date = LocalDateTime.now();
+            LocalDateTime update = LocalDateTime.now();
             schedule = new Schedule(dto.getWriter_id(), dto.getPassword(), dto.getWriter_name(), date, update, dto.getToDo());
 
-        }else {
-             schedule = new Schedule(dto.getWriter_id(), dto.getPassword(), dto.getWriter_name(), dto.getDate(), dto.getUpDate(), dto.getToDo());
+        } else {
+            schedule = new Schedule(dto.getWriter_id(), dto.getPassword(), dto.getWriter_name(), dto.getDate(), dto.getUpDate(), dto.getToDo());
         }
         return scheduleRepository.saveSchedule(schedule);
     }
@@ -79,7 +81,7 @@ public class ScheduleServiceImpl implements ScheduleService {//controller에서 
     public void deleteSchedule(Long id, Map<String, String> password) {
 
         // memo 삭제
-        int deletedRow = scheduleRepository.deleteSchedule(id,password.get("password"));
+        int deletedRow = scheduleRepository.deleteSchedule(id, password.get("password"));
         // 삭제된 row가 0개 라면
         if (deletedRow == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
@@ -97,8 +99,15 @@ public class ScheduleServiceImpl implements ScheduleService {//controller에서 
 
     @Override
     public List<ScheduleResponseDto> findScheduleByCondition(String writer, LocalDate upDate) {
-        return scheduleRepository.findScheduleByCondition(writer,upDate);
+        return scheduleRepository.findScheduleByCondition(writer, upDate);
     }
 
+    public PageInfo<ScheduleResponseDto> findPages(PageRequestDto dto) {
 
+        return scheduleRepository.findPages(dto.getPage(),dto.getSize());
+
+    }
 }
+
+
+
