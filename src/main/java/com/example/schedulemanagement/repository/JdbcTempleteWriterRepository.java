@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class JdbcTempleteWriterRepository implements WriterRepository{
+public class JdbcTempleteWriterRepository implements WriterRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public JdbcTempleteWriterRepository(DataSource dataSource) {
@@ -46,7 +46,7 @@ public class JdbcTempleteWriterRepository implements WriterRepository{
 
         jdbcInsert.execute(new MapSqlParameterSource(parameters));
 
-        return new WriterResponseDto(writer.getWriter_id(),  writer.getName(), writer.getEmail(),writer.getRegistration_date(), writer.getModification_date());
+        return new WriterResponseDto(writer.getWriter_id(), writer.getName(), writer.getEmail(), writer.getRegistration_date(), writer.getModification_date());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class JdbcTempleteWriterRepository implements WriterRepository{
 
     @Override
     public int deleteWriter(String writer_id) {
-        return jdbcTemplate.update("delete from writer where writer_id = ?" , writer_id);
+        return jdbcTemplate.update("delete from writer where writer_id = ?", writer_id);
 
     }
 

@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface WriterService {
-    public WriterResponseDto saveWriter(WriterRequestDto dto);
+    WriterResponseDto saveWriter(WriterRequestDto dto);
 
-    public List<WriterResponseDto> listAllWriter();
+    List<WriterResponseDto> listAllWriter();
 
-    public WriterResponseDto findWriterById(String id);
+    WriterResponseDto findWriterById(String id);
 
-    public void deleteWriter(String id);
+    void deleteWriter(String id);
 
 }

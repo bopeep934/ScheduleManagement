@@ -7,15 +7,22 @@ import com.example.schedulemanagement.dto.PageRequestDto;
 import com.example.schedulemanagement.entity.Schedule;
 import com.example.schedulemanagement.repository.ScheduleRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
+@RestControllerAdvice
 public class ScheduleServiceImpl implements ScheduleService {//controller에서 requestDto 객체를 받고 데이터를 처리하는 클래스.
 
     private final ScheduleRepository scheduleRepository;
@@ -84,12 +91,15 @@ public class ScheduleServiceImpl implements ScheduleService {//controller에서 
         int deletedRow = scheduleRepository.deleteSchedule(id, password.get("password"));
         // 삭제된 row가 0개 라면
         if (deletedRow == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Does not exist id = " + id);
         }
-//        if (deletedRow == 1) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The password is incorrect.");
-//
-//        }
+    }
+
+    private ResponseEntity<Map<String, String>> createErrorResponse(HttpStatus status, String message) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("status", status.toString());
+        errorResponse.put("message", message);
+        return new ResponseEntity<>(errorResponse, status);
     }
 
     @Override
@@ -102,11 +112,14 @@ public class ScheduleServiceImpl implements ScheduleService {//controller에서 
         return scheduleRepository.findScheduleByCondition(writer, upDate);
     }
 
+    @Override
     public PageInfo<ScheduleResponseDto> findPages(PageRequestDto dto) {
 
         return scheduleRepository.findPages(dto.getPage(),dto.getSize());
 
     }
+
+
 }
 
 
