@@ -28,10 +28,10 @@ public class ScheduleServiceImpl implements ScheduleService {//controller에서 
         if(dto.getDate()==null&&dto.getUpDate()==null){//만약 생성일,수정일이 비었다면 현재 시간을 인자로 넘기기
             LocalDateTime date=LocalDateTime.now();
             LocalDateTime update=LocalDateTime.now();
-             schedule = new Schedule(dto.getWriter(), dto.getPassword(), date, update, dto.getToDo());
+            schedule = new Schedule(dto.getWriter_id(), dto.getPassword(), date, update, dto.getToDo());
 
         }else {
-             schedule = new Schedule(dto.getWriter(), dto.getPassword(), dto.getDate(), dto.getUpDate(), dto.getToDo());
+             schedule = new Schedule(dto.getWriter_id(), dto.getPassword(), dto.getDate(), dto.getUpDate(), dto.getToDo());
         }
         return scheduleRepository.saveSchedule(schedule);
     }

@@ -42,7 +42,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
         jdbcInsert.withTableName("schedule").usingGeneratedKeyColumns("id");
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("writer", schedule.getWriter());
+        parameters.put("writer_id", schedule.getWriter_id());
         parameters.put("password", schedule.getPassword());
         parameters.put("registration_date", schedule.getDate());
         parameters.put("modification_date", schedule.getUpDate());
@@ -51,7 +51,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
         //저장 후 생성된 key값 number 타입으로 반환하는 메서드
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new ScheduleResponseDto(key.longValue(), schedule.getWriter(), schedule.getDate(), schedule.getUpDate(), schedule.getToDo());
+        return new ScheduleResponseDto(key.longValue(), schedule.getWriter_id(), schedule.getDate(), schedule.getUpDate(), schedule.getToDo());
 
 
     }
@@ -119,7 +119,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
             public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new ScheduleResponseDto(
                         rs.getLong("id"),
-                        rs.getString("writer"),
+                        rs.getString("writer_id"),
                         rs.getTimestamp("registration_date").toLocalDateTime(),
                         rs.getTimestamp("modification_date").toLocalDateTime(),
                         rs.getString("todo")
@@ -135,7 +135,7 @@ public class JdbcTempleteScheduleRepository implements ScheduleRepository {
             public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new Schedule(
                         rs.getLong("id"),
-                        rs.getString("writer"),
+                        rs.getString("writer_id"),
                         rs.getTimestamp("registration_date").toLocalDateTime(),
                         rs.getTimestamp("modification_date").toLocalDateTime(),
                         rs.getString("todo")
